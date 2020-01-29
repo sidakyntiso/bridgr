@@ -1,6 +1,4 @@
 ---
-output: html_document
----
 BAM for Grading Data
 ========
 Welcome! This app runs a Bayesian Aldrich Mckelvey model on user data
