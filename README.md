@@ -1,5 +1,3 @@
-# bridginggrading
-
 ---
 output: html_document
 ---
@@ -17,6 +15,9 @@ library(rstan)
 
 
 [Sean Kates - New York University](https://wp.nyu.edu/seankates/)
-[Tine Paulsen - New York University]
-[Sidak Yntiso - New York University]
+
+Tine Paulsen - New York University
+
+Sidak Yntiso - New York University
+
 [Josh Tucker - New York University](https://wp.nyu.edu/fas-joshuatucker/)
