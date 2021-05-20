@@ -1,0 +1,43 @@
+Package: bridgr
+Title: Briding the Grading Gap
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Sean",
+           family = "Kates",
+           role = c("aut"),
+           email = "sk5350@nyu.edu")
+    person(given = "Tine",
+           family = "Paulsen",
+           role = c("aut"),
+           email = "tine.paulsen@nyu.edu")
+    person(given = "Joshua A.",
+           family = "Tucker",
+           role = c("aut"),
+           email = "joshua.tucker@nyu.edu")
+    person(given = "Sidak",
+           family = "Yntiso",
+           role = c("aut", "cre"),
+           email = "sidak.yntiso@nyu.edu")
+Description: This package runs a Bayesian Aldrich Mckelvey model to correct bias in grade data. 
+   To begin with, please input grading data as a CSV file. The file should contain one column 
+   [labeled ta] that lists all graders. The remaining columns [grader1,grader2,..] should be 
+   labeled by values corresponding to the levels of the first [ta] column.
+Imports:
+    pander,
+    pryr,
+    DT,
+    ggplot2,
+    huxtable,
+    tidyverse,
+    rstan,
+    StanHeaders
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
