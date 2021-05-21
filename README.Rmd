@@ -72,12 +72,6 @@ Can we do better?
 
 # Bridging the Grade Gap
 
-```{r, include=F}
-# implement the model
-results = readRDS("C:/Users/Sidak Yntiso/Downloads/results.RDS")
-```
-  
-
 ```{r vispost, fig.align="center"}
 # implement the model
 # results = bridgr(df = simdata_five)
