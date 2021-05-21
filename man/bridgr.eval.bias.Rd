@@ -4,7 +4,7 @@
 \alias{bridgr.eval.bias}
 \title{Evaluate grading bias}
 \usage{
-bridgr.eval.bias(df, plot = TRUE, tbl = TRUE, dta = TRUE)
+bridgr.eval.bias(df, plot = TRUE, tbl = TRUE)
 }
 \arguments{
 \item{df}{A dataframe with grading data.}
@@ -12,8 +12,6 @@ bridgr.eval.bias(df, plot = TRUE, tbl = TRUE, dta = TRUE)
 \item{plot}{Whether to plot empirical CDF of grades by grader.}
 
 \item{tbl}{Whether to plot tabulate evidence of bias in grading data.}
-
-\item{dta}{Whether to tabulate best and worst outcomes for bridging observations.}
 }
 \value{
 \code{mae} Vector containing the mean absolute error of grades

@@ -47,18 +47,19 @@ bridgr.data <- function(df){
 #' corresponding to the levels of the \code{ta} column.
 #' @param df A dataframe with grading data.
 #' @param plot Whether to plot empirical CDF of grades by grader.
-#' @param tbl Whether to tabulate best and worst outcomes for bridging observations.
+#' @param tbl Whether to plot tabulate evidence of bias in grading data.
 #' @return \code{mae} Vector containing the mean absolute error of grades
 #' and ranks for bridging exams.
 #' @return \code{rmse} Vector containing the root-mean squared error of
 #' grades and ranks for bridging exams.
-#' @return \code{mae.bounds} Minimum and maximum values for the MAE of ranks.
+#' @return \code{bounds} Minimum and maximum values for the MAE and RMSE of ranks.
 #' @return \code{fstat} F-statistic and associated p-value for grades.
 #' @examples \donttest{
 #' sim.midterm = readRDS("simdata_five.rds")
 #' grading.bias.pre = bridgr.eval.bias(df=sim.midterm)
 #' }
 #' @export
+#'
 bridgr.eval.bias <- function(df,plot = TRUE,tbl = TRUE){
   library(tidyverse)
   library(huxtable)
@@ -107,20 +108,7 @@ bridgr.eval.bias <- function(df,plot = TRUE,tbl = TRUE){
     dat$ta_ranks[dat$ta==ta] = as.numeric(unlist(ta_ranks[i]))
   }
 
-  #inputs for dataset of bridging observations with ranks
-  students = paste("Student",c(1:g),sep = " ")
-  lowest_grades = as.numeric(unlist(lapply(c(1:g), function(i) min(dat$points[dat$student==i]))))
-  highest_grades = as.numeric(unlist(lapply(c(1:g), function(i) max(dat$points[dat$student==i]))))
-  lowest_ranks = as.numeric(unlist(lapply(1:g, function(i) min(unlist(ta_ranks_dat[i,])))))
-  highest_ranks = as.numeric(unlist(lapply(1:g, function(i) max(unlist(ta_ranks_dat[i,])))))
 
-  #table of bridging observations
-  dt <- data.frame(
-    students = students,
-    true_grades = paste(round(df1$avg[df1$bridges==1],2)," (",rank(-df1$avg[df1$bridges==1]),")",sep = ""),
-    low_grades = paste(round(lowest_grades,2)," (",round(lowest_ranks),")",sep = ""),
-    high_grades = paste(round(highest_grades,2)," (",round(highest_ranks),")",sep = "")
-  )
 
   #function ensures zeros are have two decimal points
   roundr <- function(t){
@@ -133,9 +121,9 @@ bridgr.eval.bias <- function(df,plot = TRUE,tbl = TRUE){
 
   #summary statistics: grades
   mae_grades = roundr(mean(abs(df1$corelta[df1$bridges==1] -
-                                df1$avg[df1$bridges==1])))
+                                 df1$avg[df1$bridges==1])))
   rmse_grades = roundr(mean((df1$corelta[df1$bridges==1] -
-                              df1$avg[df1$bridges==1])^2)^0.5)
+                               df1$avg[df1$bridges==1])^2)^0.5)
   fval = roundr((anova(lm(points ~ ta, dat)))[[4]][1])
   pvalF = (anova(lm(points ~ ta, dat)))[[5]][1]
 
@@ -150,29 +138,9 @@ bridgr.eval.bias <- function(df,plot = TRUE,tbl = TRUE){
   rmse_ranks = roundr(mean((coreltapos_bridges - corpos_bridges)^2)^0.5)
   rmse_ranks_upper = roundr((mean((c(1:g) - rev(c(1:g)))^2))^0.5)
 
-
-  #Table of Grades (Ranks) of Bridging Students
-  if(tbl==T){
-    cat("\n")
-    colnames(dt) <- rep("",ncol(dt))
-    stat_tbl <- dt %>%
-      as_hux(add_colnames = FALSE) %>%
-      insert_row(" ","True","Lowest","Highest", after = 0) %>%
-      theme_article() %>%
-      set_align(1, everywhere, "left") %>%
-      set_width(1.5) %>%
-      set_bottom_border(final(1), everywhere) %>%
-      set_position("left") %>%
-      set_header_rows(1, TRUE) %>%
-      style_headers(bold = TRUE, text_color = "black") %>%
-      set_all_padding(0) %>%
-      set_outer_padding(0) %>%
-      set_caption("Grades (Ranks) of Bridging Students")
-    print(stat_tbl)
-  }
-
   #Figure with grades by grader
   if(plot==T){
+    cat("\n")
     p <- ggplot() +
       stat_ecdf(data =subset(df1,!is.na(corelta)), aes(corelta,colour=ta),
                 geom = "step",pad = F,lty=2)+theme_bw() +
@@ -180,46 +148,49 @@ bridgr.eval.bias <- function(df,plot = TRUE,tbl = TRUE){
       scale_fill_grey()+xlab("Grade")+ylab("CDF")
     print(p)
   }
-
-  #Table of Grading Bias for Bridging Students
-  cat("\n")
-  desc_dat <- data.frame(
-    labels = c("Grades","Ranks "),
-    maes = c(mae_grades,mae_ranks),
-    rmse = c(rmse_grades,rmse_ranks),
-    fstat = c(fval,""),
-    pval = c(round(pvalF,3),""))
-  colnames(desc_dat) = rep("",ncol(desc_dat))
-  desc_tbl = desc_dat %>%
-    as_hux(add_colnames = FALSE) %>%
-    insert_row("", "MAE", "RMSE","F-statistic", "Pr(>F)", after = 0) %>%
-    set_align(2, everywhere, "left") %>%
-    theme_article() %>%
-    set_position("left") %>%
-    style_headers(bold = TRUE, text_color = "black") %>%
-    set_width(1.5) %>%
-    set_bottom_border(final(1), everywhere) %>%
-    set_position("left") %>%
-    set_header_rows(1, TRUE) %>%
-    style_headers(bold = TRUE, text_color = "black") %>%
-    set_all_padding(0) %>%
-    set_outer_padding(0) %>%
-    set_caption("Grading Bias for Bridging Students") %>%
-    add_footnote(paste0(
-      paste0("Bounds MAE Rank: [0,",mae_ranks_upper,"]",sep=""),"\n",
-      paste0("Bounds RMSE Ranks: [0,",rmse_ranks_upper,"]",sep=""),"\n",
-      paste0("__________________",sep=""),"\n",
-      paste0("Grading Parameters",sep=""),"\n",
-      paste0("# Exams: ",nrow(df1),sep=""),";\t",
-      paste0("# Graders: ",len,sep=""),"\n",
-      paste0("# Bridges: ",sum(df1$bridges ),sep=""),";\t",
-      paste0("# Missing: ",sum(df1$m),sep=""),"\n",
-      sep=""))
-  print(desc_tbl)
+  if(tbl==T){
+    #Table of Grading Bias for Bridging Students
+    cat("\n")
+    desc_dat <- data.frame(
+      labels = c("Grades","Ranks "),
+      maes = c(mae_grades,mae_ranks),
+      rmse = c(rmse_grades,rmse_ranks),
+      fstat = c(fval,""),
+      pval = c(round(pvalF,3),""))
+    colnames(desc_dat) = rep("",ncol(desc_dat))
+    desc_tbl = desc_dat %>%
+      as_hux(add_colnames = FALSE) %>%
+      insert_row("", "MAE", "RMSE","F-statistic", "Pr(>F)", after = 0) %>%
+      set_align(2, everywhere, "left") %>%
+      theme_article() %>%
+      set_position("left") %>%
+      style_headers(bold = TRUE, text_color = "black") %>%
+      set_width(1.5) %>%
+      set_bottom_border(final(1), everywhere) %>%
+      set_position("left") %>%
+      set_header_rows(1, TRUE) %>%
+      style_headers(bold = TRUE, text_color = "black") %>%
+      set_all_padding(0) %>%
+      set_outer_padding(0) %>%
+      set_caption("Grading Bias for Bridging Students") %>%
+      add_footnote(paste0(
+        paste0("Bounds MAE Rank: [0,",mae_ranks_upper,"]",sep=""),"\n",
+        paste0("Bounds RMSE Ranks: [0,",rmse_ranks_upper,"]",sep=""),"\n",
+        paste0("__________________",sep=""),"\n",
+        paste0("Grading Parameters",sep=""),"\n",
+        paste0("# Exams: ",nrow(df1),sep=""),";\t",
+        paste0("# Graders: ",len,sep=""),"\n",
+        paste0("# Bridges: ",sum(df1$bridges ),sep=""),";\t",
+        paste0("# Missing: ",sum(df1$m),sep=""),"\n",
+        sep=""))
+    print(desc_tbl)
+  }
   return(invisible(
     list(mae.grades = as.numeric(mae_grades),mae.ranks = as.numeric(mae_ranks),
-      rmse.grades =as.numeric(rmse_grades),rmse.ranks = as.numeric(rmse_ranks),
-      fstat = as.numeric(fval),fstat.pval = round(pvalF,3))))
+         rmse.grades =as.numeric(rmse_grades),rmse.ranks = as.numeric(rmse_ranks),
+         mae.bounds = as.numeric(mae_ranks_upper),
+         rmse.bounds = as.numeric(rmse_ranks_upper),
+         fstat = as.numeric(fval),fstat.pval = round(pvalF,3))))
 }
 
 
@@ -248,12 +219,7 @@ bridgr <- function(df,min_grade = NA, max_grade = NA){
   library(tidyverse)
   library(rstan)
   df1 <- bridgr.data(df=df)
-  if(is.na(min_grade)){
-    min_grade = 0
-  }
-  if(is.na(max_grade)){
-    max_grade = ceiling(max(df1$corelta,na.rm = T))
-  }
+
   if (!"rstan" %in% rownames(installed.packages())){
     install.packages("rstan")
   }
@@ -267,11 +233,18 @@ bridgr <- function(df,min_grade = NA, max_grade = NA){
   # create ecdf function for each TA
   len <- length(unique(df1$ta))
 
+  if(is.na(min_grade)){
+    min_grade = 0
+  }
+  if(is.na(max_grade)){
+    max_grade = ceiling(max(df1[,paste("ta",1:len,sep = "")],na.rm = T))
+  }
+
   #missing observations
   m = sum(df1$m)
 
   #stan settings
-  ITER <- 10000
+  ITER <- 20000
   WARMUP <- 1000
   THIN <- 20
   CHAINS<-8
@@ -314,7 +287,7 @@ bridgr <- function(df,min_grade = NA, max_grade = NA){
     zmedsrank<-rank(zmeds, na.last="keep", ties.method= "average")
 
     #where there are no grading data, make
-    coregradmeds[rowSums(is.na(df)) == ncol(df)-1] <- NA
+    coregradmeds[df1$m==TRUE] <- NA
 
     return(invisible(list(df1,coregradmeds,zmedsrank)))
   })
@@ -329,8 +302,7 @@ bridgr <- function(df,min_grade = NA, max_grade = NA){
 #' @param bridgr.results The output from \code{bridgr::bridgr}.
 #' @param plot Whether to plot empirical CDF of post-processed (bridged)
 #' grades.
-#' @param tbl Whether to tabulate the pre-processed average and post-
-#' processed grades for the common bridging observations.
+#' @param tbl Whether to tabulate evidence of bias in post-processed grades.
 #' @return \code{mae} Vector containing the values of the pre-processed
 #' and post-processed mean absolute errors for the grades and ranks
 #' @return \code{rmse} Vector containing the values of the pre-processed
@@ -351,34 +323,6 @@ bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
   g = nrow(results[results$bridges==1,])
   e = ecdf(results$corrected_grades)
 
-  #Table of Grades (Ranks) of Bridging Students
-  if(tbl==T){
-    dt <- data.frame(
-      students = paste("Student",c(1:g),sep = " "),
-      avg_grades = paste(round(results$avg[results$bridges==1],2)," (",
-                         rank(-results$avg[results$bridges==1]),")",sep = ""),
-      corrected_grades = paste(round(results$corrected_grades[results$bridges==1],2)," (",
-                               rank(-results$corpos[results$bridges==1]),")",sep = "")
-    )
-
-    #Summary Table: Bias
-    cat("\n")
-    colnames(dt) <- rep("",ncol(dt))
-    stat_tbl <- dt %>%
-      as_hux(add_colnames = FALSE) %>%
-      insert_row(" ","Average","Bridged", after = 0) %>%
-      theme_article() %>%
-      set_align(1, everywhere, "left") %>%
-      set_width(1.5) %>%
-      set_bottom_border(final(1), everywhere) %>%
-      set_position("left") %>%
-      set_header_rows(1, TRUE) %>%
-      style_headers(bold = TRUE, text_color = "black") %>%
-      set_all_padding(0) %>%
-      set_outer_padding(0) %>%
-      set_caption("Grades (Ranks) of Bridged Grades")
-    print(stat_tbl)
-  }
 
   #Figure with Average and Bridged Grades
   if(plot==T){
@@ -400,7 +344,6 @@ bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
       scale_fill_grey()+xlab("Grade")+ylab("CDF")+theme_bw()
     print(p)
   }
-
 
   #Table Summarizing Improvements
   #function ensures zeros are have two decimal points
@@ -427,63 +370,64 @@ bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
   rmse_ranks = roundr(mean((coreltapos_bridges - corpos_bridges)^2)^0.5)
   rmse_ranks_upper = roundr((mean((c(1:g) - rev(c(1:g)))^2))^0.5)
 
-  #Initiate Table
-  cat("\n")
-  desc_dat <- data.frame(
-    labels = c("Grades","Ranks "),
-    maes = c(mae_grades,mae_ranks),
-    rmse = c(rmse_grades,rmse_ranks))
+  if(tbl==T){
+    #Initiate Table
+    cat("\n")
+    desc_dat <- data.frame(
+      labels = c("Grades","Ranks "),
+      maes = c(mae_grades,mae_ranks),
+      rmse = c(rmse_grades,rmse_ranks))
 
-  #Add unbridged summary stats
-  coreltapos_bridges_old = rank(-results$corelta[results$bridges==1],
-                                na.last="keep", ties.method= "average")
-  corpos_bridges_old = rank(-results$avg[results$bridges==1], na.last="keep",
-                            ties.method= "average")
-  mae_grades_old = roundr(mean(abs(results$corelta[results$bridges==1] -
-                                    results$avg[results$bridges==1])))
-  rmse_grades_old = roundr(mean((results$corelta[results$bridges==1] -
-                                  results$avg[results$bridges==1])^2)^0.5)
-  mae_ranks_old = roundr(mean(abs(coreltapos_bridges_old-corpos_bridges_old)))
-  rmse_ranks_old = roundr(mean((coreltapos_bridges_old - corpos_bridges_old)^2)^0.5)
+    #Add unbridged summary stats
+    coreltapos_bridges_old = rank(-results$corelta[results$bridges==1],
+                                  na.last="keep", ties.method= "average")
+    corpos_bridges_old = rank(-results$avg[results$bridges==1], na.last="keep",
+                              ties.method= "average")
+    mae_grades_old = roundr(mean(abs(results$corelta[results$bridges==1] -
+                                       results$avg[results$bridges==1])))
+    rmse_grades_old = roundr(mean((results$corelta[results$bridges==1] -
+                                     results$avg[results$bridges==1])^2)^0.5)
+    mae_ranks_old = roundr(mean(abs(coreltapos_bridges_old-corpos_bridges_old)))
+    rmse_ranks_old = roundr(mean((coreltapos_bridges_old - corpos_bridges_old)^2)^0.5)
 
-  x <- data.frame(
-    labels = c("Grades","Ranks "),
-    maes = c(mae_grades_old,mae_ranks_old),
-    rmse = c(rmse_grades_old,rmse_ranks_old))
+    x <- data.frame(
+      labels = c("Grades","Ranks "),
+      maes = c(mae_grades_old,mae_ranks_old),
+      rmse = c(rmse_grades_old,rmse_ranks_old))
 
-  #cbind with unbridged values
-  desc_dat =cbind(x[,c(1:3)],desc_dat[,c(2:3)])
-  colnames(desc_dat) = rep("",ncol(desc_dat))
+    #cbind with unbridged values
+    desc_dat =cbind(x[,c(1:3)],desc_dat[,c(2:3)])
+    colnames(desc_dat) = rep("",ncol(desc_dat))
 
-  #Final Table
-  desc_tbl= desc_dat %>%
-    as_hux() %>%
-    set_align(2, everywhere, "left") %>%
-    set_contents(1, 2:5, c("MAE", "RMSE","MAE", "RMSE")) %>%
-    insert_row("", "Naive", "","Bridged", "", after = 0) %>%
-    merge_cells(1, 2:3) %>%
-    merge_cells(1, 4:5) %>%
-    set_align(1, everywhere, "center") %>%
-    set_tb_padding(1, everywhere, 0) %>%
-    set_bold(1, everywhere) %>%
-    theme_article() %>%
-    set_caption("Reductions in Grading Bias for Bridging Students") %>%
-    set_position("left") %>%
-    style_headers(bold = TRUE, text_color = "black") %>%
-    set_width(1.5) %>%
-    set_bottom_border(final(1), everywhere) %>%
-    set_position("left") %>%
-    set_header_rows(1, TRUE) %>%
-    style_headers(bold = TRUE, text_color = "black") %>%
-    set_all_padding(0) %>%
-    set_outer_padding(0)
-  print(desc_tbl)
-  return(invisible(
-    list(mae.grades.post = as.numeric(mae_grades),mae.ranks.post = as.numeric(mae_ranks),
-         rmse.grades.post =as.numeric(rmse_grades),rmse.ranks.post = as.numeric(rmse_ranks),
-         mae.grades.pre = as.numeric(mae_grades_old),mae.ranks.pre = as.numeric(mae_ranks_old),
-         rmse.grades.pre =as.numeric(rmse_grades_old),rmse.ranks.pre = as.numeric(rmse_ranks_old)
-         )))
+    #Final Table
+    desc_tbl= desc_dat %>%
+      as_hux() %>%
+      set_align(2, everywhere, "left") %>%
+      set_contents(1, 2:5, c("MAE", "RMSE","MAE", "RMSE")) %>%
+      insert_row("", "Naive", "","Bridged", "", after = 0) %>%
+      merge_cells(1, 2:3) %>%
+      merge_cells(1, 4:5) %>%
+      set_align(1, everywhere, "center") %>%
+      set_tb_padding(1, everywhere, 0) %>%
+      set_bold(1, everywhere) %>%
+      theme_article() %>%
+      set_caption("Reductions in Grading Bias for Bridging Students") %>%
+      set_position("left") %>%
+      style_headers(bold = TRUE, text_color = "black") %>%
+      set_width(1.5) %>%
+      set_bottom_border(final(1), everywhere) %>%
+      set_position("left") %>%
+      set_header_rows(1, TRUE) %>%
+      style_headers(bold = TRUE, text_color = "black") %>%
+      set_all_padding(0) %>%
+      set_outer_padding(0)
+    print(desc_tbl)
+    return(invisible(
+      list(mae.grades.post = as.numeric(mae_grades),mae.ranks.post = as.numeric(mae_ranks),
+           rmse.grades.post =as.numeric(rmse_grades),rmse.ranks.post = as.numeric(rmse_ranks),
+           mae.grades.pre = as.numeric(mae_grades_old),mae.ranks.pre = as.numeric(mae_ranks_old),
+           rmse.grades.pre =as.numeric(rmse_grades_old),rmse.ranks.pre = as.numeric(rmse_ranks_old)
+      )))
 
+  }
 }
-

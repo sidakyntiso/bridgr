@@ -12,8 +12,7 @@ bridgr.eval.post(bridgr.results, plot = T, tbl = T)
 \item{plot}{Whether to plot empirical CDF of post-processed (bridged)
 grades.}
 
-\item{tbl}{Whether to tabulate the pre-processed average and post-
-processed grades for the common bridging observations.}
+\item{tbl}{Whether to tabulate evidence of bias in post-processed grades.}
 }
 \value{
 \code{mae} Vector containing the values of the pre-processed
