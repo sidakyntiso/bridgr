@@ -7,10 +7,10 @@ When large survey courses rely on multiple professors or teaching
 assistants to judge student responses, grading bias can occur. This R
 package enables instructors to identify and correct for bias in grading
 data using a Bayesian version of the Aldrich Mckelvey algorithm. The
-package supports various configurations of the scale of the assessment,
-the number of graders and the number of total students. The algorithm
-requires grading data with at least one common, bridging assessment or
-student. The grading file should contain :
+package supports various configurations of the assessment scale, the
+number of graders, and the number of total students. The algorithm
+requires grading data in which all graders each assess at least one
+common assignment. The grading file should contain:
 
   - One column \[labeled ta\] that lists all graders.
   - Remaining columns \[grader1,grader2,..\] should be labeled by values
@@ -41,7 +41,7 @@ data("simdata_five")
 grading.bias.pre = bridgr.eval.bias(df=simdata_five,plot=T,tbl=F)
 ```
 
-<img src="man/figures/README-visbias-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="man/figures/README-visbias-1.png" width="100%" style="display: block; margin: auto;" />
 
 The figure above shows the empirical cumulative distribution function
 (CDF) for grades by grader. The y-axis marks the fraction of grades
@@ -53,29 +53,30 @@ curve), and some graders rarely assign low scores (rightmost curve).
 Graders may also differ in the rate at which the probability of
 assigning higher grades increases across grades (the slopes).
 
-We turn to the **common bridging students**, depicted as points in the
-figure, to solve this problem. In a no-bias world, each bridging student
-would receive the same grade from each grader. Instead, some students
-perform systematically more poorly in raw scores (i.e., the horizontal
+We turn to the **commonly graded students**, depicted as points in the
+figure, to solve this problem. In a no-bias world, each student would
+receive the same grade from each grader. Instead, some students perform
+systematically more poorly in raw scores (i.e., the horizontal
 difference for each student) than they would have with a different
-grader. Moreover, many students would do better in rank placement than 
-other students depending on their section (i.e., the vertical difference 
+grader. Moreover, many students would do better in rank placement than
+other students depending on their section (i.e., the vertical difference
 for each student).
 
 While specific graders are too strict or too lenient, we might think
 that the average across graders is a reasonable estimate of the
 students’ scores. Averaging removes systematic grading bias associated
 with each grader. Treating the average as the “true grade,” the table
-below compares how far each bridging student’s grade is from the true
-grade. We find a large difference between the lowest and highest grade a
-student might get, depending upon their grader.
+below compares how far each student’s grade is from the true grade. We
+find a large difference between the lowest and highest grade a student
+might get, depending upon their grader.
 
-The table below demonstrates that the traditional grading techniques may
-produce a large grading bias as measured by the mean absolute error
-(MAE) or the root mean squared error (RMSE). Bias is apparent in the
-assigned grader scores and the implied ranks (among bridging students).
-Further, an analysis of variance F-test suggests that the grader
-distributions are significantly different.
+Specifically, the table tabulates the mean absolute error (MAE) and the
+root mean squared error (RMSE). Bias is apparent in the assigned grader
+scores and the implied ranks (among commonly graded students). Further,
+an analysis of variance F-test suggests that the grader distributions
+are significantly different. Therefore, evidence from the commonly
+graded students suggests that the traditional grading techniques may
+produce significant grading bias in the aggregrate.
 
 ``` r
 # Evaluate grading bias using bridging observations
@@ -103,21 +104,21 @@ Can we do better?
 # implement the model
 # results = bridgr(df = simdata_five)
 
-# evaluate improvements using bridging observations
+# evaluate improvements among commonly graded students
 grading.bias.post = bridgr.eval.post(bridgr.results = results,plot = T, tbl = F)
 ```
 
-<img src="man/figures/README-vispost-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="man/figures/README-vispost-1.png" width="100%" style="display: block; margin: auto;" />
 
 The bridging technique produces the distribution of grades above. The
-corrected grades closely approximate the average grade for our common
-bridging students. As the following table illustrates, in the
+bridged grades closely approximate the average grade for the commonly
+graded students. As the following table illustrates, in the
 \`simdata\_five’ dataset, the algorithm produces a threefold reduction
 in systematic error for the raw scores, while error in student ranks is
 eliminated.
 
 ``` r
-# evaluate improvements using bridging observations
+# evaluate improvements among commonly graded students
 grading.bias.post = bridgr.eval.post(bridgr.results = results,plot = F, tbl = T)
 #> 
 #> Reductions in Grading Bias for Bridging Students
