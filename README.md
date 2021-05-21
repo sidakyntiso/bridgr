@@ -41,7 +41,7 @@ data("simdata_five")
 grading.bias.pre = bridgr.eval.bias(df=simdata_five,plot=T,tbl=F)
 ```
 
-<img src="man/figures/README-visbias-1.png" width="0%" style="display: block; margin: auto;" />
+<img src="man/figures/README-visbias-1.png" width="50%" style="display: block; margin: auto;" />
 
 The figure above shows the empirical cumulative distribution function
 (CDF) for grades by grader. The y-axis marks the fraction of grades
