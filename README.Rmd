@@ -34,6 +34,20 @@ When large survey courses rely on multiple professors or teaching assistants to 
 
 [Josh Tucker](https://wp.nyu.edu/fas-joshuatucker/) 
 
+# Installation Instructions
+
+`bridgr` can be installed using:
+
+```{r eval = FALSE}
+# Install devtools if necessary
+if (!"devtools" %in% rownames(installed.packages())){
+    install.packages("devtools")
+}
+# Install bridgr
+devtools::install_github("sidakyntiso/bridgr")
+```
+
+
 # Load Data
 
 ```{r, warnings =FALSE, message=FALSE}
@@ -71,6 +85,10 @@ Can we do better?
 
 # Bridging the Grade Gap
 
+```{r, include=F}
+# implement the model
+results = readRDS("C:/Users/Sidak Yntiso/Downloads/results.RDS")
+```
   
 
 ```{r vispost, fig.align="center"}
