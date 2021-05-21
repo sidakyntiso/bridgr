@@ -18,12 +18,12 @@ common assignment. The grading file should contain:
 
 # Authors
 
-[Sidak Yntiso](https://sidakyntiso.github.io/),
-[sidak.yntiso@nyu.edu](sidak.yntiso@nyu.edu) (Maintainer)
-
 [Sean Kates](https://wp.nyu.edu/seankates/)
 
 [Tine Paulsen](https://www.tinepaulsen.com)
+
+[Sidak Yntiso](https://sidakyntiso.github.io/),
+[sidak.yntiso@nyu.edu](sidak.yntiso@nyu.edu) (Maintainer)
 
 [Josh Tucker](https://wp.nyu.edu/fas-joshuatucker/)
 
