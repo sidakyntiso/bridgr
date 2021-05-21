@@ -4,14 +4,16 @@
 \alias{bridgr.eval.bias}
 \title{Evaluate grading bias}
 \usage{
-bridgr.eval.bias(df, plot = TRUE, tbl = TRUE)
+bridgr.eval.bias(df, plot = TRUE, tbl = TRUE, dta = TRUE)
 }
 \arguments{
 \item{df}{A dataframe with grading data.}
 
 \item{plot}{Whether to plot empirical CDF of grades by grader.}
 
-\item{tbl}{Whether to tabulate best and worst outcomes for bridging observations.}
+\item{tbl}{Whether to plot tabulate evidence of bias in grading data.}
+
+\item{dta}{Whether to tabulate best and worst outcomes for bridging observations.}
 }
 \value{
 \code{mae} Vector containing the mean absolute error of grades
@@ -20,7 +22,7 @@ and ranks for bridging exams.
 \code{rmse} Vector containing the root-mean squared error of
 grades and ranks for bridging exams.
 
-\code{mae.bounds} Minimum and maximum values for the MAE of ranks.
+\code{bounds} Minimum and maximum values for the MAE and RMSE of ranks.
 
 \code{fstat} F-statistic and associated p-value for grades.
 }
