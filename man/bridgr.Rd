@@ -7,8 +7,6 @@
 bridgr(df, min_grade = NA, max_grade = NA)
 }
 \arguments{
-\item{df}{A dataframe with grading data.}
-
 \item{min_grade}{The minimum possible grade (by default is zero.)}
 
 \item{max_grade}{The maximum possible grade (by default is the
