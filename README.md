@@ -58,9 +58,9 @@ figure, to solve this problem. In a no-bias world, each bridging student
 would receive the same grade from each grader. Instead, some students
 perform systematically more poorly in raw scores (i.e., the horizontal
 difference for each student) than they would have with a different
-grader. Moreover, many students would do better in rank placement than
-other students depending upon the section they are in (i.e., the
-vertical difference for each student).
+grader. Moreover, many students would do better in rank placement than 
+other students depending on their section (i.e., the vertical difference 
+for each student).
 
 While specific graders are too strict or too lenient, we might think
 that the average across graders is a reasonable estimate of the
