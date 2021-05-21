@@ -88,8 +88,8 @@ root mean squared error (RMSE). Bias is apparent in the assigned grader
 scores and the implied ranks (among commonly graded students). Further,
 an analysis of variance F-test suggests that the grader distributions
 are significantly different. Therefore, evidence from the commonly
-graded students suggests that the traditional grading techniques may
-produce significant grading bias in the aggregrate.
+graded students suggests that traditional grading techniques may
+produce significant grading bias in this class.
 
 ``` r
 # Evaluate grading bias using bridging observations
