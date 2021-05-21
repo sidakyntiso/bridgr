@@ -73,7 +73,7 @@ We turn to the **commonly graded students**, depicted as points in the figure, t
 While specific graders are too strict or too lenient, we might think that the average across graders is a reasonable estimate of the students' scores. Averaging removes systematic grading bias associated with each grader. Treating the average as the "true grade," the table below compares how far each student's grade is from the true grade. We find a large difference between the lowest and highest grade a student might get, depending upon their grader. 
 
 
-Specifically, the table tabulates the mean absolute error (MAE) and the root mean squared error (RMSE). Bias is apparent in the assigned grader scores and the implied ranks (among commonly graded students). Further, an analysis of variance F-test suggests that the grader distributions are significantly different. Therefore, evidence from the commonly graded students suggests that the traditional grading techniques may produce significant grading bias in the aggregrate.
+Specifically, the table tabulates the mean absolute error (MAE) and the root mean squared error (RMSE). Bias is apparent in the assigned grader scores and the implied ranks (among commonly graded students). Further, an analysis of variance F-test suggests that the grader distributions are significantly different. Therefore, evidence from the commonly graded students suggests that the traditional grading techniques may produce significant grading bias in this class.
 
 ```{r evalbias, warnings = FALSE}
 # Evaluate grading bias using bridging observations
