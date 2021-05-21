@@ -54,7 +54,7 @@ data("simdata_five")
 grading.bias.pre = bridgr.eval.bias(df=simdata_five,plot=T,tbl=F)
 ```
 
-<img src="man/figures/README-visbias-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-visbias-1.png" width="50%" style="display: block; margin: auto;" />
 
 The figure above shows the empirical cumulative distribution function
 (CDF) for grades by grader. The y-axis marks the fraction of grades
@@ -121,7 +121,7 @@ Can we do better?
 grading.bias.post = bridgr.eval.post(bridgr.results = results,plot = T, tbl = F)
 ```
 
-<img src="man/figures/README-vispost-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-vispost-1.png" width="50%" style="display: block; margin: auto;" />
 
 The bridging technique produces the distribution of grades above. The
 bridged grades closely approximate the average grade for the commonly
