@@ -44,7 +44,7 @@ data("simdata_five")
 
 # Evidence of Systematic Bias in Grading
 
-```{r visbias, warning = FALSE, message = FALSE,fig.align="center",fig.height=4, fig.width=4}
+```{r visbias, warning = FALSE, message = FALSE,fig.align="center"}
 # Visualize grading bias using bridging observations
 grading.bias.pre = bridgr.eval.bias(df=simdata_five,plot=T,tbl=F)
 ```
@@ -78,7 +78,7 @@ results = readRDS("C:/Users/Sidak Yntiso/Downloads/results.RDS")
 ```
   
 
-```{r vispost, fig.align="center",fig.height=4, fig.width=4}
+```{r vispost, fig.align="center"}
 # implement the model
 # results = bridgr(df = simdata_five)
 
