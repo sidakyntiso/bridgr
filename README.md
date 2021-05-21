@@ -107,7 +107,7 @@ Can we do better?
 grading.bias.post = bridgr.eval.post(bridgr.results = results,plot = T, tbl = F)
 ```
 
-<img src="man/figures/README-vispost-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-vispost-1.png" width="50%" style="display: block; margin: auto;" />
 
 The bridging technique produces the distribution of grades above. The
 corrected grades closely approximate the average grade for our common
