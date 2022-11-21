@@ -10,11 +10,7 @@ data using a Bayesian version of the Aldrich Mckelvey algorithm. The
 package supports various configurations of the assessment scale, the
 number of graders, and the number of total students. The algorithm
 requires grading data in which all graders each assess at least one
-common assignment. The grading file should contain:
-
-  - One column \[labeled ta\] that lists all graders.
-  - Remaining columns \[grader1,grader2,..\] should be labeled by values
-    corresponding to the levels of the first \[ta\] column
+common assignment. 
 
 # Authors
 
