@@ -28,12 +28,8 @@ common assignment.
 `bridgr` can be installed using:
 
 ``` r
-# Install devtools if necessary
-if (!"devtools" %in% rownames(installed.packages())){
-    install.packages("devtools")
-}
 # Install bridgr
-devtools::install_github("sidakyntiso/bridgr")
+install.packages("bridgr")
 ```
 
 # Load Data
