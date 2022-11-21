@@ -28,8 +28,11 @@ common assignment.
 `bridgr` can be installed using:
 
 ``` r
-# Install bridgr
+# Bridgr is available on CRAN
 install.packages("bridgr")
+
+# Bridgr is also available on Github
+# install.packages("sidakyntiso/bridgr")
 ```
 
 # Load Data
