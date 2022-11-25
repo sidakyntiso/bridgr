@@ -1,10 +1,6 @@
 ---
 title: "bridgr"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{README}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: md_document
 ---
 
 ```{r, include = FALSE}
