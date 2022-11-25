@@ -4,10 +4,10 @@
 \alias{bridgr.eval.bias}
 \title{Evaluate grading bias}
 \usage{
-bridgr.eval.bias(df, plot = TRUE, tbl = TRUE)
+bridgr.eval.bias(bridgr.dat, plot = TRUE, tbl = TRUE)
 }
 \arguments{
-\item{df}{A dataframe with grading data.}
+\item{bridgr.dat}{A \code{bridgr.data} object.}
 
 \item{plot}{Whether to plot empirical CDF of grades by grader.}
 
@@ -28,14 +28,4 @@ grades and ranks for bridging exams.
 \code{bridgr.eval.bias} assesses evidence of bias in grading data.
 Specifically, this function uses a set of common or bridging exams to
 evaluate whether graders systematically differ from each other.
-The grading data should contain the following columns: (a)
-one column labeled \code{ta} that lists all graders. Remaining
-columns \code{grader1,grader2,..} should be labeled by values
-corresponding to the levels of the \code{ta} column.
-}
-\examples{
-\donttest{
-sim.midterm = readRDS("simdata_five.rds")
-grading.bias.pre = bridgr.eval.bias(df=sim.midterm)
-}
 }

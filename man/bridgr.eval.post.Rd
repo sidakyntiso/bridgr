@@ -7,7 +7,7 @@
 bridgr.eval.post(bridgr.results, plot = T, tbl = T)
 }
 \arguments{
-\item{bridgr.results}{The output from \code{bridgr::bridgr}.}
+\item{bridgr.results}{A \code{bridgr} object.}
 
 \item{plot}{Whether to plot empirical CDF of post-processed (bridged)
 grades.}
@@ -24,10 +24,4 @@ and post-processed root mean-squared errors for the grades and ranks
 \description{
 \code{bridgr.eval.post} evaluates improvements to grading bias from
 the bridging process.
-}
-\examples{
-\donttest{
-bridgr.results = bridgr(df = sim.midterm)
-grading.bias.post = bridgr.eval.post(bridgr.results = results)
-}
 }

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>bridgr</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">bridgr</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>When large survey courses rely on multiple professors or teaching
+assistants to judge student responses, grading bias can occur. This R
+package enables instructors to identify and correct for bias in grading
+data using a Bayesian version of the Aldrich Mckelvey algorithm. The
+package supports various configurations of the assessment scale, the
+number of graders, and the number of total students. A description of
+the method is contained in Kates, Paulsen, Tucker, and Yntiso (2022)
+``Bridging the Grade Gap: Reducing Assessment Bias in a Multi-Grader
+Class.”</p>
+</div>
+<div id="authors" class="section level1">
+<h1>Authors</h1>
+<p><a href="https://wp.nyu.edu/seankates/">Sean Kates</a></p>
+<p><a href="https://www.tinepaulsen.com">Tine Paulsen</a></p>
+<p><a href="https://sidakyntiso.github.io/">Sidak Yntiso</a>
+(Maintainer)</p>
+<p><a href="https://wp.nyu.edu/fas-joshuatucker/">Josh Tucker</a></p>
+</div>
+<div id="installation-instructions" class="section level1">
+<h1>Installation Instructions</h1>
+<p><code>bridgr</code> can be installed:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From CRAN</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;bridgr&quot;)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># From Github</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Install devtools if necessary</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># if (!&quot;devtools&quot; %in% rownames(installed.packages())){</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     install.packages(&quot;devtools&quot;)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># # Install bridgr</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># devtools::install_github(&quot;sidakyntiso/bridgr&quot;)</span></span></code></pre></div>
+</div>
+<div id="load-data" class="section level1">
+<h1>Load Data</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bridgr)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;bridgr.sim.data&quot;</span>)</span></code></pre></div>
+</div>
+<div id="evidence-of-systematic-bias-in-grading" class="section level1">
+<h1>Evidence of Systematic Bias in Grading</h1>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-structure the input grading dataset.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>bridgr.dat <span class="ot">&lt;-</span> <span class="fu">bridgr.data</span>(<span class="at">df=</span>bridgr.sim.data,<span class="at">student=</span><span class="st">&quot;student&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">grader.assigned =</span> <span class="st">&quot;grader.assigned&quot;</span>,<span class="at">grader=</span><span class="st">&quot;grader&quot;</span>,<span class="at">grade=</span><span class="st">&quot;grade&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize grading bias using bridging observations</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>grading.bias.pre <span class="ot">=</span> <span class="fu">bridgr.eval.bias</span>(<span class="at">bridgr.dat=</span>bridgr.dat,<span class="at">plot=</span>T,<span class="at">tbl=</span>F)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>The figure above shows the empirical cumulative distribution function
+(CDF) for grades by grader. The y-axis marks the fraction of grades
+equal to or less than the corresponding grade on the x-axis.</p>
+<p>If there were no bias, we might expect that the curves would overlap
+perfectly. Instead, some graders rarely assign top scores (leftmost
+curve), and some graders rarely assign low scores (rightmost curve).
+Graders may also differ in the rate at which the probability of
+assigning higher grades increases across grades (the slopes).</p>
+<p>We turn to the <strong>commonly graded students</strong>, depicted as
+points in the figure, to solve this problem. In a no-bias world, each
+student would receive the same grade from each grader. Instead, some
+students perform systematically more poorly in raw scores (i.e., the
+horizontal difference for each student) than they would have with a
+different grader. Moreover, many students would do better in rank
+placement than other students depending on their section (i.e., the
+vertical difference for each student).</p>
+<p>While specific graders are too strict or too lenient, we might think
+that the average across graders is a reasonable estimate of the
+students’ scores. Averaging removes systematic grading bias associated
+with each grader. Treating the average as the “true grade,” the table
+below compares how far each student’s grade is from the true grade. We
+find a large difference between the lowest and highest grade a student
+might get, depending upon their grader.</p>
+<p>Specifically, the table tabulates the mean absolute error (MAE) and
+the root mean squared error (RMSE). Bias is apparent in the assigned
+grader scores and the implied ranks (among commonly graded students).
+Further, an analysis of variance F-test suggests that the grader
+distributions are significantly different. Therefore, evidence from the
+commonly graded students suggests that the traditional grading
+techniques may produce significant grading bias in this class.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate grading bias using bridging observations</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bridgr.eval.bias</span>(<span class="at">bridgr.dat=</span>bridgr.dat,<span class="at">plot=</span>F,<span class="at">tbl=</span>T)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Grading Bias for Bridging Students           </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -----------------------------------------------</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            MAE    RMSE   F-statistic   Pr(&gt;F)  </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Grades   3.75   4.30   11.97         0.001   </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Ranks    0.40   0.63                         </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -----------------------------------------------</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Bounds MAE Rank: [0,2.4]                     </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Bounds RMSE Ranks: [0,2.83]                  </span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   __________________                           </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Grading Parameters                           </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   # Exams: 135; # Graders: 3                   </span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   # Bridges: 5; # Missing: 0</span></span></code></pre></div>
+<p>Can we do better?</p>
+</div>
+<div id="bridging-the-grade-gap" class="section level1">
+<h1>Bridging the Grade Gap</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate grading bias using bridging observations.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># results = bridgr(bridgr.dat=bridgr.dat,min_grade=NA,max_grade=NA)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load pre-processed results</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;bridgr.sim.results&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Access student identifiers</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bridgr.sim.results<span class="sc">$</span>student_id)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]  3  4  7  9 10 13</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the corrected grades</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bridgr.sim.results<span class="sc">$</span>corrected_grades)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        3        4        7        9       10       13 </span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 36.92617 27.10109 41.84941 25.45499 36.11471 40.78159</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the corrected ranks</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bridgr.sim.results<span class="sc">$</span>corrected_ranks)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   3   4   7   9  10  13 </span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  61  11 115   8  55 106</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate improvements among commonly graded students</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>grading.bias.post <span class="ot">=</span> <span class="fu">bridgr.eval.post</span>(<span class="at">bridgr.results =</span> bridgr.sim.results,<span class="at">plot =</span> T, <span class="at">tbl =</span> F)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAA9lBMVEUAAAAAADoAAGYAOmYAOpAAZpAAZrYzMzM6AAA6ADo6AGY6OmY6OpA6kNtNTU1NTW5NTY5NbqtNjshmAABmADpmAGZmOgBmOjpmOpBmZmZmtrZmtttmtv9uTU1uTW5uTY5ubo5ubqtuq+SOTU2OTW6OTY6Obk2OyP+QOgCQOjqQOmaQkDqQkGaQtpCQ27aQ29uQ2/+ZmZmrbk2rbm6rbo6ryKur5OSr5P+2ZgC2Zjq225C22/+2///Ijk3I///bkDrbtmbb/7bb/9vb///kq27k///r6+v/tmb/yI7/25D/27b/29v/5Kv//7b//8j//9v//+T///83gFJSAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAM2klEQVR4nO2dD3vbthHGIdeT3dRO2inN0k7ZVneb5SzppHZbtE0puymNos6KjO//ZYYDwf8ADwJBCiLvfRpRPoEU9esBBAEejnFSrdixTyB0ESBEBAgRAUJEgBARIETOgC6OJp8/H5c7oPcao87W0FixESDERoAQGwFCbHpA28uzldjsJufrgn0jzXGRT+faXevVH0CjudwQIBOgr67FJvqKAJkAff18zfd3rwSg/YyxMYf6xkavBCD4W2xaAHT/+x/l9uO3j7/4Od2o8wwN0G9fCgZXP52v97Mxh3+7ybX4d7aC9zw6X/sH9OHx5xLQw/e3/N2vk01ynqEBmkZTvrnenK9lrRIvchup7W4y9Q7o7ZO/xx708U8/gjOpTXKewQHajPlyCoCgGRI0Irl9tIqY1HV7Vez+m5/5xz++URuubjPedy4mX42Ads//8+VKB0i12+0B+vCFJKM26rOuPQicIP5i7akKQPyfr8YcAMEFP6lisB3FYDr0IHmeXQNKDGZAEbsGQFkjPVaNtHAhQak9QEG0QRaAgMDGcJkXXtQeoIfvb+Kr2M2RrmIsrV88rHsxAAT/jt0PKpxkSIDq1BmgvPfIL8bOzK9OAFD5i2tPy7tCB1RyH06ApBZcgWCMBsx0xgVPANGIota44ASo1riAL4jvLgiQzrjgEpC2IAHiChAjQEbjAr6A6QsOG9CiIO1M87ABKS1EA31hKEiAuATECVCNsQkgUTWREgepb4BU61Wx7566jJbx4QDayIlXB/UMUHoBLNn3d989X2+vYO51vpvIedbPnp2ttpeMTeXY7Ce/mfP4g5LCBJQ7Lz+ABJvlVMCRb655NJaD2FDvto9WXFhg6iP+oKSBAIoEgjG8RtdAZfflCsCAxFvxn/Ss+IPSnj0DZGiDYF5DVJ/t1X9lDYNJjhjQMjYnVU/OfhQ1DECAgEMde321Vk4CgHaTKWwTD6p4T+FEDlXLU8/M+IlLPygSLbGsY0xcy5ZyehEAyX+fznNt0Kb0eFH/PEir/Uv5eN7TeHIV5hPjxlkAY588m4LlV3dz9UFJgwBkoaTNrihIQPmpsA4AqalpvcIEVFeQblY5I0AIoNqCBIgAYUYChBgJEGIkQPVGRoDqjay+4OABMQJUb2RIweECgnGKi4uLpoA8h/0GAyg321xfsP7n6yOjYXBeDs/z9L59P5tW99YYBwIIoBQfJD81QIUHFmr3rgVkCK6XgPZ3c5jr+Zcca00GynLTPcpY0oAAba/WMmBBzfOIGlec7lHGkgYCSLZB6UC0HKWfTYvTPcpYPmIogDpog8SvV4Dkn8tpcbpHGcsHHBAgQKL1oHi6J3QPkohY9bd56QdJQDCroeZ6Km0QTPcc3AalwT3vHoNu5fbzVuPFNGfjpSed9IMSQPuZZrpHGUsyAyoGOUM85tvb/HmeEiCzjNM9icyACgGGEIr58MOb3Mc9AFQ73ZPIDKgQogquJKocVDTeYtSzecLZfurZs8yA8kHOcnv/u7wX9cCDrGTnQR/SUMy0HSJA+Tbo7U1ibRVQJXhOVzAYQLkg57higRs9/K3Ny7zuZMIFpPpBMuo5rmmiH/QkvZARIET+AVXDU7UFBwxIW5IA5U6FANUaCRBiJECIkQAhRgKEGAkQYiRAiJEAIUYChBgJEGIkQPVG3UImuoLDBaQvSYByZ0KA6owEyGjMnuyw2ZsAIXsTIGRvAoTsfTqAvCkDZFP6dABpjORBmQgQIgKEiAAh8tuTNqyZqLMNFJCxJAHKnQYBMhoJEGL0B+iXfxf/3lSXJauUqVPfAFWSZ2gAHZRggwAhSgHBclWHKDRA8mH6KbzGaaDgpZKB7fVlUkZ/EI2KgHQV1iCfgJJnyxoAiqFcyiRiCaBKBjZIgBidrRp40LEA1ZS0BaRCCvKAKhnYLqfSfmqAsmcTm1SxZZzwKA9Im4HtFAHVlrRvpGXoqRZQPgPbgAGliQwLVaycga0BIJbIilJggCQM2TBPZXrM/Ww012ZgU2WsFUA/yI8HbdQ6o0s2lpf8r5/OtRnY5MKSsrmyU28AtaU8oA3LFnBANTxA+5k+37ZBwwOUXAz3M6t++OAAZSHjCakspaEKd24nxyE7EUDZtU91hnJRz3EUXUu5npnOWGMLBlAWcagCVVvKs3qygLKYVRXu3FKuZ5tI5xCmniuAsqhnFe7sPdfzQh7ndDyodKtRTO0s2iHfuZ7l2uqFlTaCBlRRsckRgHy3QacOKIt6VuHOvnI9L3IqrmYTOCDZCsk731hZ1LMKd/bUD5JZC1SutVMCtL2Me9BLuzGhBoCgdX5fcKGa3cMBtByX39SqCSDx3+kBqlzmETUCxEutUM3uBMg3IP36BM7K3awmN/GR1XhHsypWvpCZdz8QkOrKVT9Al5oyHTB9FynHaX24I26k+eICnihj8Is9epAJ0MZupF1zwOztUg7+tz9gpi7zsI1/iscqlt4NlOzL0evGHqSmt9FFvZR8dBTL62a2B8hHFTtQXoY7sLWjdTYChNiO1kgfKAKEKFBAxn4QAUJEgFrSMQFVKgMBKhor302AikYChBgJEGIkQIiRANUbqx26ngHqes75yFPPh8qDB1mVPGEP0hgPAaS5ZfIDyOuQ9DEB2ZUMZtD+UBEgRKECMgwHOWsggGC4/bB4uPR4TnvxYAHpRxQhQ9ZBERq5A7rsBDopQJsx16XGstGRAOkbijZnNaQXOeg4gBizRukLkOWEcfWITnvxpoDsfe0gQIyZCEGIlJP6BcgoGa7qpGEAcuczEEDRIYFeRQ0DUAMRIETHAMQMKyMToNx3EqAaIwFCjAQIMRKgOqO6DSBAJiOzLmmwhQMoC+65fyEz0HrJ9dwfQFmQM4QZQliml1zP/QGUBRh+AExvb/3keu4PoGKIqnjnJ9ez44Sz3dSzcTioDUCFIGcIx/ST67lVD+oUUN6DPn6b5DJunMr4OIA2lstGaQ5p/CQX5Hz/Im2eGwJKT71bQPAMcDSu2bHmkMZPsiBnxcdHrmemM9bu7q2KOT4ojfaDhBNB/weaZw+5no8IyLsHIXICxI4GaHtpG+dVPqTTXtwVkHVJs83Vg05i4vCYgE5h6hlZbKo9QJvz9Ul4ENMZkd393GpE9rGmJQ0EkLsIECIChKhDQIWmkwBVjUxnRHcnQIiRACFGAoQYCRBiHA4gRoAQQNYl6229jfYhQLz2ZzMCxOsBWZdEbD0FZLMKRauAshXXD1NngKxLYjZHQFH34VAHTTg3nnG2mno2/6TtZ88C9iDNGHEbHsSKyn+0v/tryFXMMvKpxSoWXQfdBh0d0PZqHTIg29i59gDFsRpOAVGdALIuaWPr22XeMItHgLIvsGYxyJ70IXErQwKU7410Dciv2gKkM2pLYsYeAip3YwlQpve6ixYBytSs00yAXIwECDESIMTYM0CN7ksHAUhn1O1OgHJG3e7tADKMJzaRR0Cm8+oUUPlNY/kE1JSFB0Dq97Dy74IRM7dwH2+APNyX+gAkfxCr/C63h8jVId1UAQQvAQBS3lP8Xfs7t4ekKwcqKIt6Vu90OQ6LrWIIgHIvqWSOVN8jilnUs3qny/Xs+khCxx4Eayg6epEZUBZxqN61lOsZMfppg0C+g1mymFX1rqVczz6nno1XsTYAZVHP6p33XM9WRi/9IIj22b/0fJmv8SB5nmECMvSk24j2OcU2qAXVXcVu0qvYTXwV85Pr+TBjuIByuZ5r+kFFDQtQvQgQIgKEiAAhujiafP58XO4DS9Ynav+LOv7tViJAiAgQIr8P0/RQBAgRAUJEgBARIEQugNTKpYV7V60+xEub4gV5PPBtV7JbOQBSK5cWx/B1goGAymC/Se8Ec7uS3coBkFq5tDh+ZlJloM1U7g9/vuV2h+xWjm1QZQTWJOEQNgUffviH8B67Q3YrN0AwuFgcw9fr/sWTN1YF391A9bIp2bWcAMmVS+3+d9u5mijy0CMPilfmtGwwrBqreCnLm560QWrl0uIYvk6qxuAF48PdWhyyezkASlYuxTstam3TofWDhiUChIgAISJAiAgQIgKEqAtAMmpd+/TSxnEl/g7VPqD9DChstGH9BIinEKLztfGzkNU6oFwK4e2jv7CzFWQ2B3faTdjolQC0nznnvOhCrQPaTdLWZ3s5Vn9HZyvILbybnK32s7HBvcJQ64BkmnfwmtFc5sv93zo2ytolQMltjmJo6syDBBPJSqaREbSk02wfreKFWdxWZulCnbVBCaDdZDSHP1JA4dYuqfavYlHcAieA4JFlvhnFVUy8bBwfz+1KHXQUl3E/6HwdAwIHuhzNd5OxaqQFsYApddGT3qiedNwGLUUL9J1omPKX+XD50L0YJgKEiAAhIkCICBAiAoSIACEiQIgIECIChOj/NomjHlk2ZEAAAAAASUVORK5CYII=" style="display: block; margin: auto;" /></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

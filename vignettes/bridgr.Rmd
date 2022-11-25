@@ -2,7 +2,7 @@
 title: "bridgr"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{README}
+  %\VignetteIndexEntry{bridgr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,7 +24,7 @@ When large survey courses rely on multiple professors or teaching assistants to 
 
 [Tine Paulsen](https://www.tinepaulsen.com) 
 
-[Sidak Yntiso](https://sidakyntiso.github.io/) (Maintainer)
+[Sidak Yntiso](https://sidakyntiso.github.io/), (Maintainer)
 
 [Josh Tucker](https://wp.nyu.edu/fas-joshuatucker/) 
 

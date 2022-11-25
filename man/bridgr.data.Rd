@@ -4,8 +4,23 @@
 \alias{bridgr.data}
 \title{Load grading data}
 \usage{
-bridgr.data(df)
+bridgr.data(df, student, grader.assigned, grader, grade)
+}
+\arguments{
+\item{df}{An object of class \code{data.frame}. Must contain a row for each
+grade or evaluation, as well as columns indicating student and grader identifiers.}
+
+\item{student}{Identifier for the student, exam or stimuli associated with \code{grade} field.}
+
+\item{grader.assigned}{Identifier for the student's assigned grader or section}
+
+\item{grader}{Identifier for the grader or section associated with the \code{grade} field.}
+
+\item{grade}{The grade to be scaled (numeric or integer)}
+}
+\value{
+\code{grade.data} Processed version of the provided grade data.
 }
 \description{
-Load grading data
+\code{bridgr.data} loads grading data.
 }

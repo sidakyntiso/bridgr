@@ -4,33 +4,53 @@
 \alias{bridgr}
 \title{Implement bridging correction}
 \usage{
-bridgr(df, min_grade = NA, max_grade = NA)
+bridgr(
+  bridgr.dat,
+  min_grade = NA,
+  max_grade = NA,
+  stan_model = NA,
+  ITER = NA,
+  WARMUP = NA,
+  THIN = NA,
+  CHAINS = NA,
+  CORES = NA
+)
 }
 \arguments{
+\item{bridgr.dat}{A \code{bridgr.data} object.}
+
 \item{min_grade}{The minimum possible grade (by default is zero.)}
 
 \item{max_grade}{The maximum possible grade (by default is the
 maximum observed grade.)}
+
+\item{stan_model}{Rstan model (see manuscript for default implementation.)}
+
+\item{ITER}{RSTAN parameter. A positive integer specifying the number of iterations for
+each chain (including warmup). The default is 20000.}
+
+\item{WARMUP}{= Rstan parameter. A positive integer specifying the number of warmup (aka burnin) iterations
+per chain. The default is 1000.}
+
+\item{THIN}{= A positive integer specifying the period for saving samples. The default is 1,}
+
+\item{CHAINS}{Rstan parameter. A positive integer specifying the number of Markov chains.
+The default is 4.}
+
+\item{CORES}{Rstan parameter. The number of cores to use when executing the Markov chains
+in parallel. The default is to use the value of the "mc.cores"}
 }
 \value{
-\code{df1} A version of the provided grade data.
+\code{bridgr.dat} Processed version of the input dataset.
 
 \code{coregradmeds} The post-processed (bridged) student
-grades on the scale of the original grade data.
+grades on the scale of the input dataset.
 
-\code{zmedsrank} The post-processed (bridged) student ranks
+\code{zmedsrank} The post-processed (bridged) student ranks.
+
+\code{student_id} Student identifier that can be linked with the input dataset.
 }
 \description{
 Implements a Bayesian version of the Aldrich Mckelvey model to
 grade data.
-The grading data should contain the following columns: (a)
-one column labeled \code{ta} that lists all graders. Remaining
-columns \code{grader1,grader2,..} should be labeled by values
-corresponding to the levels of the \code{ta} column.
-}
-\examples{
-\donttest{
-sim.midterm = readRDS("simdata_five.rds")
-grading.bias.pre = bridgr.eval.bias(df=sim.midterm)
-}
 }
