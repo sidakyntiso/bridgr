@@ -107,7 +107,7 @@ Can we do better?
 # Bridging the Grade Gap
 
     # Evaluate grading bias using bridging observations.
-    # results = bridgr(bridgr.dat=bridgr.dat,min_grade=NA,max_grade=NA)
+    # bridgr.sim.results = bridgr(bridgr.dat=bridgr.dat,min_grade=NA,max_grade=NA)
 
     # Load pre-processed results
     data("bridgr.sim.results")
