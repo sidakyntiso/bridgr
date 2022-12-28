@@ -54,3 +54,13 @@ grades on the scale of the input dataset.
 Implements a Bayesian version of the Aldrich Mckelvey model to
 grade data.
 }
+\examples{
+data("bridgr.sim.data")
+# Re-structure the input grading dataset.
+bridgr.dat <- bridgr.data(df=bridgr.sim.data,student="student",
+grader.assigned = "grader.assigned", grader="grader",grade="grade")
+\donttest{
+# Correct grading bias using bridging observations. Set cores = NA to utilize more CPU cores.
+bridgr.sim.results = bridgr(bridgr.dat=bridgr.dat,min_grade=NA,max_grade=NA, CORES = 2)
+}
+}

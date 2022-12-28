@@ -11,8 +11,8 @@ Authors@R:
     	person(given = "Sidak",family = "Yntiso",
 		role = c("aut", "cre"),email = "sidak.yntiso@nyu.edu"))
 Description: Grading bias can arise when students are assigned different graders with varying severity levels. 
-	This package implements a Bayesian version of the Aldrich and McKelvey (1977) scaling model to correct bias in grade data. 
-	Our method is described in Kates, Paulsen, Tucker, and Yntiso (2022) ''Bridging the Grade Gap: Reducing Assessment Bias in a Multi-Grader Class''.
+  This package implements a Bayesian version of the Aldrich and McKelvey (1977) scaling model to correct bias in grade data. 
+	Our method is described in Kates, Paulsen, Tucker, and Yntiso (2022) ''Bridging the Grade Gap: Reducing Assessment Bias in a Multi-Grader Class'' <https://www.dropbox.com/s/2kwc498thp7g222/bridgegradinggap.pdf?dl=0>.
 Imports:
     ggplot2,
     huxtable,

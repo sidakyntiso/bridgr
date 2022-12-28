@@ -29,3 +29,13 @@ grades and ranks for bridging exams.
 Specifically, this function uses a set of common or bridging exams to
 evaluate whether graders systematically differ from each other.
 }
+\examples{
+data("bridgr.sim.data")
+# Re-structure the input grading dataset.
+bridgr.dat <- bridgr.data(df=bridgr.sim.data,student="student",
+grader.assigned = "grader.assigned", grader="grader",grade="grade")
+
+# Evaluate grading bias using bridging observations
+bridgr.eval.bias(bridgr.dat=bridgr.dat,plot=FALSE,tbl=TRUE)
+
+}

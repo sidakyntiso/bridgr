@@ -10,12 +10,18 @@
 #' @param grader.assigned Identifier for the student's assigned grader or section
 #' @return \code{grade.data} Processed version of the provided grade data.
 #'
+#' @examples
+#' data("bridgr.sim.data")
+#' # Re-structure the input grading dataset.
+#' bridgr.dat <- bridgr.data(df=bridgr.sim.data,student="student",
+#' grader.assigned = "grader.assigned", grader="grader",grade="grade")
+#'
 #' @export
 
 bridgr.data <- function(df,student,grader.assigned,grader,grade){
   grade.data = df
   if(!class(grade.data$grade) %in% c("integer","numeric")){
-    cat(message("Error in bridgr.data : object 'grade' not numeric or integer"))
+    message("Error in bridgr.data : object 'grade' not numeric or integer")
   }
 
   #identify the number of graders
@@ -42,7 +48,7 @@ bridgr.data <- function(df,student,grader.assigned,grader,grade){
   grade.data <- grade.data[!duplicated(grade.data),]
 
   #identify average of grades
-  grade.data$avg  <- rowMeans(grade.data[,ta],na.rm =T)
+  grade.data$avg  <- rowMeans(grade.data[,ta],na.rm =TRUE)
 
   #bridging observations
   grade.data$bridges =as.numeric(rowSums(!is.na(grade.data[,ta]))==len)
@@ -84,6 +90,15 @@ bridgr.data <- function(df,student,grader.assigned,grader,grade){
 #' @return \code{bounds} Minimum and maximum values for the MAE and RMSE of ranks.
 #' @return \code{fstat} F-statistic and associated p-value for grades.
 #'
+#' @examples
+#' data("bridgr.sim.data")
+#' # Re-structure the input grading dataset.
+#' bridgr.dat <- bridgr.data(df=bridgr.sim.data,student="student",
+#' grader.assigned = "grader.assigned", grader="grader",grade="grade")
+#'
+#' # Evaluate grading bias using bridging observations
+#' bridgr.eval.bias(bridgr.dat=bridgr.dat,plot=FALSE,tbl=TRUE)
+#'
 #' @export
 
 bridgr.eval.bias <- function(bridgr.dat,plot = TRUE,tbl = TRUE){
@@ -91,7 +106,7 @@ bridgr.eval.bias <- function(bridgr.dat,plot = TRUE,tbl = TRUE){
   `%>%` = dplyr::`%>%`
   student = corelta = xecdf = NULL
   if(is.null(bridgr.dat$bridges)){
-    cat(message("Error in bridgr.eval.bias: Please input a `bridgr.data` object."))
+    message("Error in bridgr.eval.bias: Please input a `bridgr.data` object.")
   }
   #identify bridges
   g = nrow(bridgr.dat[bridgr.dat$bridges==1,])
@@ -173,7 +188,7 @@ bridgr.eval.bias <- function(bridgr.dat,plot = TRUE,tbl = TRUE){
   rmse_ranks_upper = roundr((mean((c(1:g) - rev(c(1:g)))^2))^0.5)
 
   #Figure with grades by grader
-  if(plot==T){
+  if(plot==TRUE){
     if (requireNamespace("ggplot2", quietly = TRUE)) {
       cat("\n")
       p <- ggplot2::ggplot() +
@@ -184,12 +199,12 @@ bridgr.eval.bias <- function(bridgr.dat,plot = TRUE,tbl = TRUE){
         ggplot2::scale_fill_grey()+ggplot2::xlab("Grade")+ggplot2::ylab("CDF")
       print(p)
     } else {
-      cat(message("Error in requireNamespace(ggplot2) : object 'ggplot2' not found"))
+      message("Error in requireNamespace(ggplot2) : object 'ggplot2' not found")
     }
   }
 
 
-  if(tbl==T){
+  if(tbl==TRUE){
     if (requireNamespace("huxtable", quietly = TRUE)&
         requireNamespace("dplyr", quietly = TRUE)) {
       #Table of Grading Bias for Bridging Students
@@ -228,7 +243,7 @@ bridgr.eval.bias <- function(bridgr.dat,plot = TRUE,tbl = TRUE){
           sep=""))
       print(desc_tbl)
     } else {
-      cat(message("Error in requireNamespace(huxtable) : object 'huxtable' not found"))
+      message("Error in requireNamespace(huxtable) : object 'huxtable' not found")
     }
   }
   return(invisible(
@@ -265,25 +280,37 @@ bridgr.eval.bias <- function(bridgr.dat,plot = TRUE,tbl = TRUE){
 #' @return \code{zmedsrank} The post-processed (bridged) student ranks.
 #' @return \code{student_id} Student identifier that can be linked with the input dataset.
 #'
+#' @examples
+#' data("bridgr.sim.data")
+#' # Re-structure the input grading dataset.
+#' bridgr.dat <- bridgr.data(df=bridgr.sim.data,student="student",
+#' grader.assigned = "grader.assigned", grader="grader",grade="grade")
+#' \donttest{
+#' # Correct grading bias using bridging observations. Set cores = NA to utilize more CPU cores.
+#' bridgr.sim.results = bridgr(bridgr.dat=bridgr.dat,min_grade=NA,max_grade=NA, CORES = 2)
+#' }
 #' @export
 
 bridgr <- function(bridgr.dat,min_grade = NA, max_grade = NA,stan_model = NA,
                    ITER=NA,WARMUP=NA,THIN=NA,CHAINS=NA,CORES=NA){
   if(is.null(bridgr.dat$bridges)){
-    cat(message("Error in bridgr: Please input a `bridgr.data` object."))
+    message("Error in bridgr: Please input a `bridgr.data` object.")
   }
   #stan settings
+  #restore options before exiting the function even if the function breaks
+  old <- options()
+  on.exit(options(old))
 
   if (requireNamespace("rstan", quietly = TRUE)) {
     rstan::rstan_options(auto_write = TRUE)
     if (is.na(CORES)){
       options(mc.cores = parallel::detectCores())
     } else {
-      options(mc.cores = CORES)
+      old<-options(mc.cores = CORES)
     }
 
   } else {
-    cat(message("Error in requireNamespace(rstan) : object 'rstan' not found"))
+    message("Error in requireNamespace(rstan) : object 'rstan' not found")
   }
 
   if (is.na(stan_model)){
@@ -324,8 +351,6 @@ bridgr <- function(bridgr.dat,min_grade = NA, max_grade = NA,stan_model = NA,
   rowta<-bridgr.dat$ta
   if (requireNamespace("rstan", quietly = TRUE)) {
     try({
-      set.seed(12102019)
-
       matal<-cbind(bridgr.dat[,ta])
       mataldf<-as.data.frame(matal)
       mataldf <- round(mataldf,0) #Make all grades integers
@@ -368,7 +393,7 @@ bridgr <- function(bridgr.dat,min_grade = NA, max_grade = NA,stan_model = NA,
       return(invisible(bridgr.results))
     })
   } else {
-    cat(message("Error in requireNamespace(rstan) : object 'rstan' not found"))
+    message("Error in requireNamespace(rstan) : object 'rstan' not found")
   }
 
 
@@ -389,9 +414,14 @@ bridgr <- function(bridgr.dat,min_grade = NA, max_grade = NA,stan_model = NA,
 #' @return \code{rmse} Vector containing the values of the pre-processed
 #' and post-processed root mean-squared errors for the grades and ranks
 #'
+#' @examples
+#' # Load pre-processed results
+#' data("bridgr.sim.results")
+#' # Evaluate improvements among commonly graded students
+#' grading.bias.post = bridgr.eval.post(bridgr.results = bridgr.sim.results,plot = TRUE, tbl = FALSE)
 #' @export
 
-bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
+bridgr.eval.post <- function(bridgr.results,plot = TRUE,tbl=TRUE){
   #define globals
   `%>%` = dplyr::`%>%`
   student = Model = xecdf = NULL
@@ -405,7 +435,7 @@ bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
 
 
   #Figure with Average and Bridged Grades
-  if(plot==T){
+  if(plot==TRUE){
     meanpoints = meanpoints = results$avg[results$bridges==1]
     xpoints = results$corrected_grades[results$bridges==1]
     xecdf = as.numeric(unlist(lapply(c(1:g), function(i)
@@ -417,14 +447,14 @@ bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
                       xecdf=xecdf)
     if (requireNamespace("ggplot2", quietly = TRUE)) {
       p <- ggplot2::ggplot(data = results,mapping = ggplot2::aes(x=corrected_grades))+
-        ggplot2::stat_ecdf(inherit.aes =T,geom = "step",pad = F)+
+        ggplot2::stat_ecdf(inherit.aes =TRUE,geom = "step",pad = F)+
         ggplot2::geom_point(ggplot2::aes(x=points,y=xecdf,shape=student,colour=Model),
                             dat,size=3)+
         ggplot2::scale_color_grey(start=0.6, end=0.2)+
         ggplot2::scale_fill_grey()+ggplot2::xlab("Grade")+ggplot2::ylab("CDF")+ggplot2::theme_bw()
       print(p)
     } else {
-      cat(message("Error in requireNamespace(ggplot2) : object 'ggplot2' not found"))
+      message("Error in requireNamespace(ggplot2) : object 'ggplot2' not found")
     }
   }
 
@@ -453,7 +483,7 @@ bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
   rmse_ranks = roundr(mean((coreltapos_bridges - corpos_bridges)^2)^0.5)
   rmse_ranks_upper = roundr((mean((c(1:g) - rev(c(1:g)))^2))^0.5)
 
-  if(tbl==T){
+  if(tbl==TRUE){
     if (requireNamespace("huxtable", quietly = TRUE)&
         requireNamespace("dplyr", quietly = TRUE)) {
       #Initiate Table
@@ -508,7 +538,7 @@ bridgr.eval.post <- function(bridgr.results,plot = T,tbl=T){
         huxtable::set_outer_padding(0)
       print(desc_tbl)
     } else {
-      cat(message("Error in requireNamespace(huxtable) : object 'huxtable' not found"))
+      message("Error in requireNamespace(huxtable) : object 'huxtable' not found")
     }
     return(invisible(
       list(mae.grades.post = as.numeric(mae_grades),mae.ranks.post = as.numeric(mae_ranks),

@@ -4,7 +4,7 @@
 \alias{bridgr.eval.post}
 \title{Evaluate improvements from bridging process}
 \usage{
-bridgr.eval.post(bridgr.results, plot = T, tbl = T)
+bridgr.eval.post(bridgr.results, plot = TRUE, tbl = TRUE)
 }
 \arguments{
 \item{bridgr.results}{A \code{bridgr} object.}
@@ -24,4 +24,10 @@ and post-processed root mean-squared errors for the grades and ranks
 \description{
 \code{bridgr.eval.post} evaluates improvements to grading bias from
 the bridging process.
+}
+\examples{
+# Load pre-processed results
+data("bridgr.sim.results")
+# Evaluate improvements among commonly graded students
+grading.bias.post = bridgr.eval.post(bridgr.results = bridgr.sim.results,plot = TRUE, tbl = FALSE)
 }

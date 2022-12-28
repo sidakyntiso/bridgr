@@ -24,3 +24,10 @@ grade or evaluation, as well as columns indicating student and grader identifier
 \description{
 \code{bridgr.data} loads grading data.
 }
+\examples{
+data("bridgr.sim.data")
+# Re-structure the input grading dataset.
+bridgr.dat <- bridgr.data(df=bridgr.sim.data,student="student",
+grader.assigned = "grader.assigned", grader="grader",grade="grade")
+
+}
